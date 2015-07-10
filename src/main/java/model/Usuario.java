@@ -1,17 +1,18 @@
 package model;
 
 public class Usuario {
-	private long id;
+	private Integer id;
 	private String cpf;
 	private String rg;
 	private String nome;
 	private String email;
 	private String perfil;
 	private String senha;
-	public long getId() {
+	
+	public Integer getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	public String getCpf() {

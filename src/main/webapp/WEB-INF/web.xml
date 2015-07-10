@@ -11,7 +11,7 @@
   
   <servlet>
   	<servlet-name>Hello</servlet-name>
-  	<servlet-class>br.com.projeto.admin.HelloServlet</servlet-class>
+  	<servlet-class>br.com.project.admin.HelloServlet</servlet-class>
   </servlet>
   
   
