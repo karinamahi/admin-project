@@ -90,11 +90,11 @@ public class UsuarioDao {
 			System.out.println("PERFIL: " + usuario.getPerfil() + "\n");
 		}
 	}
-	
-	public void salvar(Usuario usuario){
-		if(usuario.getId()!= null){
+
+	public void salvar(Usuario usuario) {
+		if (usuario.getId() != null) {
 			alterarUsuario(usuario);
-		}else{
+		} else {
 			addUsuario(usuario);
 		}
 	}
@@ -117,6 +117,89 @@ public class UsuarioDao {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
 
+	/**
+	 * Faz busca de um registro no banco de dados pelo número do id do usuário
+	 * 
+	 * @param id
+	 *            É um inteiro que representa o número do id do usuário a ser
+	 *            buscado
+	 * @return Um objeto usuário quando encontra ou null quando não encontra
+	 */
+	public Usuario buscarPorId(Integer id) {
+		String sql = "Select * from usuario where id=?";
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				Usuario usuario = new Usuario();
+				usuario.setId(rs.getInt("id"));
+				usuario.setCpf(rs.getString("cpf"));
+				usuario.setEmail(rs.getString("email"));
+				usuario.setNome(rs.getString("nome"));
+				usuario.setPerfil(rs.getString("perfil"));
+				usuario.setRg(rs.getString("rg"));
+				usuario.setSenha(rs.getString("senha"));
+				return usuario;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Realiza a busca de todos os registros da tabela usuario
+	 * @return Uma lista de objetos Usuario
+	 */
+	public List<Usuario> buscarTodos() {
+		String sql = "Select * from usuario";
+		List<Usuario> lista = new ArrayList<Usuario>();
+		try {
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				Usuario usuario = new Usuario();
+				usuario.setId(rs.getInt("id"));
+				usuario.setCpf(rs.getString("cpf"));
+				usuario.setEmail(rs.getString("email"));
+				usuario.setNome(rs.getString("nome"));
+				usuario.setPerfil(rs.getString("perfil"));
+				usuario.setRg(rs.getString("rg"));
+				usuario.setSenha(rs.getString("senha"));
+				lista.add(usuario);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+	
+	public Usuario autenticar(Usuario consultaUsuario){
+		String sql = "Select * from usuario where email=? and senha=?";
+		
+		try (PreparedStatement stmt = connection.prepareStatement(sql)){
+			stmt.setString(1, consultaUsuario.getEmail());
+			stmt.setString(2, consultaUsuario.getSenha());
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next()){
+				Usuario usuario = new Usuario();
+			usuario.setNome(rs.getString("nome"));
+			usuario.setEmail(rs.getString("email"));
+			usuario.setCpf(rs.getString("cpf"));
+			usuario.setRg(rs.getString("rg"));
+			usuario.setPerfil(rs.getString("perfil"));
+			usuario.setId(rs.getInt("id"));
+			usuario.setSenha(rs.getString("senha"));
+			return usuario;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;		
 	}
 }
+
+
