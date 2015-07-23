@@ -200,6 +200,17 @@ public class UsuarioDao {
 		}
 		return null;		
 	}
+	
+	public void excluir(Usuario usuario){
+		try {
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement("delete from usuario where id=?");
+			stmt.setInt(1, usuario.getId());
+			stmt.execute();
+			stmt.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
 
 

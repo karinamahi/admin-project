@@ -104,4 +104,13 @@ public class UsuarioTest {
 		Usuario usuRetorno = dao.autenticar(usuario);
 		System.out.println(usuRetorno);
 	}
+	
+	@Test
+	public void deveExcluirUsuarioPorId(){
+		UsuarioDao dao = new UsuarioDao();
+		Usuario usuario = new Usuario();
+		usuario.setId(5);
+		dao.excluir(usuario);	
+		System.out.println("Usuário excluído com sucesso!");
+	}
 }

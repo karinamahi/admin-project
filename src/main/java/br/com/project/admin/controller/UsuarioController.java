@@ -2,6 +2,7 @@ package br.com.project.admin.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 import javax.json.JsonObject;
 import javax.servlet.ServletException;
@@ -36,24 +37,51 @@ public class UsuarioController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("Chamou!" + req);
+		resp.setContentType("text/html");
+		String acao = req.getParameter("acao");
+		if(acao.equals("excluir")){
+			String id = req.getParameter("id");
+			Usuario usuario = new Usuario();
+			if(id!= null)
+				usuario.setId(Integer.parseInt(id));
+			
+			UsuarioDao usuarioDao = new UsuarioDao();
+			usuarioDao.excluir(usuario);
+			resp.getWriter().print("<b>Excluído com sucesso!</b>");
+			System.out.println("Chamou!" + req);
+		}else if(acao.equals("listar")){
+			UsuarioDao usuarioDao = new UsuarioDao();
+			List<Usuario> lista = usuarioDao.buscarTodos();
+			for(Usuario u: lista){
+				resp.getWriter().print(u.getNome() + "<br>");
+			}
+			//resp.getWriter().print(lista);
+		}
+		
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		System.out.println("Chamou!");
-		
+		String id = req.getParameter("id");
 		String nome = req.getParameter("nome");
 		String email = req.getParameter("email");
 		String senha = req.getParameter("senha");
 		String cpf = req.getParameter("cpf");
+		String rg = req.getParameter("rg");
+		String perfil = req.getParameter("perfil");
 		
 		Usuario usuario = new Usuario();
+		if(id!= null)
+			usuario.setId(Integer.parseInt(id));
+		
 		usuario.setNome(nome);
 		usuario.setEmail(email);
 		usuario.setSenha(senha);
 		usuario.setCpf(cpf);
-		
+		usuario.setRg(rg);
+		usuario.setPerfil(perfil);
+				
 		UsuarioDao usuarioDao = new UsuarioDao();
 		usuarioDao.salvar(usuario);
 		resp.getWriter().print("<b>Sucesso!</b>");
