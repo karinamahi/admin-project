@@ -4,60 +4,78 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
-import javax.json.JsonObject;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpUtils;
 
 import model.Usuario;
-
-import org.json.JSONObject;
-
 import dao.UsuarioDao;
-
-
 
 //http://localhost:8080/admin-project/usuariocontroller.do
 @WebServlet("/usuariocontroller.do")
 public class UsuarioController extends HttpServlet {
-	
-	public UsuarioController(){
+
+	public UsuarioController() {
 		System.out.println("Novo Servlet");
 	}
-	
+
 	@Override
-	public void init()throws ServletException{
+	public void init() throws ServletException {
 		System.out.println("Init..");
 		super.init();
 	}
-	
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		resp.setContentType("text/html");
 		String acao = req.getParameter("acao");
-		if(acao.equals("excluir")){
+		if (acao.equals("excluir")) {
 			String id = req.getParameter("id");
 			Usuario usuario = new Usuario();
-			if(id!= null)
+			if (id != null)
 				usuario.setId(Integer.parseInt(id));
-			
+
 			UsuarioDao usuarioDao = new UsuarioDao();
 			usuarioDao.excluir(usuario);
-			resp.getWriter().print("<b>Excluído com sucesso!</b>");
+			//resp.getWriter().print("<b>Excluído com sucesso!</b>");
+			resp.sendRedirect("usuariocontroller.do?acao=listar");
 			System.out.println("Chamou!" + req);
-		}else if(acao.equals("listar")){
+			
+		} else if (acao.equals("listar")) {
 			UsuarioDao usuarioDao = new UsuarioDao();
 			List<Usuario> lista = usuarioDao.buscarTodos();
-			for(Usuario u: lista){
-				resp.getWriter().print(u.getNome() + "<br>");
-			}
-			//resp.getWriter().print(lista);
+
+			req.setAttribute("lista", lista);
+			RequestDispatcher dispatcher = req
+					.getRequestDispatcher("WEB-INF/listausu.jsp");
+			dispatcher.forward(req, resp);
+			
+		} else if(acao.equals("alt")){
+			String id = req.getParameter("id");
+			UsuarioDao usuarioDao = new UsuarioDao();
+			Usuario usuario = usuarioDao.buscarPorId(Integer.parseInt(id));
+			req.setAttribute("usu", usuario);
+			RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/usuarioform.jsp");
+			dispatcher.forward(req, resp);
+			
+		}else if(acao.equals("cad")){
+			Usuario usuario = new Usuario();
+			usuario.setId(0);
+			usuario.setCpf("");
+			usuario.setNome("");
+			usuario.setRg("");
+			usuario.setEmail("");
+			usuario.setPerfil("");
+			usuario.setSenha("");
+			
+			req.setAttribute("usu", usuario);
+			RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/usuarioform.jsp");
+			dispatcher.forward(req, resp);
 		}
-		
 	}
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -70,34 +88,35 @@ public class UsuarioController extends HttpServlet {
 		String cpf = req.getParameter("cpf");
 		String rg = req.getParameter("rg");
 		String perfil = req.getParameter("perfil");
-		
+
 		Usuario usuario = new Usuario();
-		if(id!= null)
+		if (id != "")
 			usuario.setId(Integer.parseInt(id));
-		
+
 		usuario.setNome(nome);
 		usuario.setEmail(email);
 		usuario.setSenha(senha);
 		usuario.setCpf(cpf);
 		usuario.setRg(rg);
 		usuario.setPerfil(perfil);
-				
+
 		UsuarioDao usuarioDao = new UsuarioDao();
 		usuarioDao.salvar(usuario);
 		resp.getWriter().print("<b>Sucesso!</b>");
-		
-		
+
 		StringBuffer jb = new StringBuffer();
 		String line = null;
 		try {
 			BufferedReader reader = req.getReader();
-			while ((line = reader.readLine()) != null) jb.append(line);
+			while ((line = reader.readLine()) != null)
+				jb.append(line);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 	}
+
 	@Override
-	public void destroy(){
+	public void destroy() {
 		System.out.println("Destroy..");
 		super.destroy();
 	}
