@@ -23,7 +23,7 @@ public class UsuarioDao {
 	public void addUsuario(Usuario usuario) {
 		String sql = "insert into usuario"
 				+ "(cpf, rg, nome, email, perfil, senha)"
-				+ "values(?,?,?,?,?,?)";
+				+ "values(?,?,?,?,?,md5(?))";
 
 		try {
 			java.sql.PreparedStatement stmt = connection.prepareStatement(sql);
@@ -100,7 +100,7 @@ public class UsuarioDao {
 	}
 
 	public void alterarUsuario(Usuario usuario) {
-		String sql = "update usuario set cpf=?, rg=?, nome=?, email=?, perfil=?, senha=? where id=?";
+		String sql = "update usuario set cpf=?, rg=?, nome=?, email=?, perfil=?, senha=md5(?) where id=?";
 
 		try {
 			java.sql.PreparedStatement stmt = connection.prepareStatement(sql);
@@ -178,7 +178,7 @@ public class UsuarioDao {
 	}
 	
 	public Usuario autenticar(Usuario consultaUsuario){
-		String sql = "Select * from usuario where email=? and senha=?";
+		String sql = "Select * from usuario where email=? and senha=md5(?)";
 		
 		try (PreparedStatement stmt = connection.prepareStatement(sql)){
 			stmt.setString(1, consultaUsuario.getEmail());

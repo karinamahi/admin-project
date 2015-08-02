@@ -7,7 +7,10 @@
 	metadata-complete="false"
 	version="3.1">
 	
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>projetoadmin</display-name>
+  <welcome-file-list>
+  	<welcome-file>login.html</welcome-file>
+  </welcome-file-list>
   
   <servlet>
   	<servlet-name>Hello</servlet-name>
