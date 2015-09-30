@@ -15,7 +15,15 @@ import model.Usuario;
 @WebServlet("/autenticador.do")
 public class AutenticadorController extends HttpServlet {
 	
-
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException ,IOException {
+		HttpSession sessao = req.getSession(false);
+		
+		if(sessao!=null){
+			sessao.invalidate();
+		}
+		resp.sendRedirect("login.html");
+	};
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
