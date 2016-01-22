@@ -64,6 +64,14 @@
 			<artifactId>spring-context</artifactId>
 			<version>4.1.7.RELEASE</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4-1206-jdbc41</version>
+		</dependency>
+
+		
 
 	</dependencies>
 
